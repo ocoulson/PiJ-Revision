@@ -47,10 +47,78 @@ public class Hand {
             if(straight(sorted)) {
                 System.out.println("You have a straight");
             } else {
-                System.out.println("Could be a anything, who knows!");
+                findLikeCards(sorted);
             }
         }
         return sorted;
+    }
+
+    private void findLikeCards(List<Card> sorted) {
+        List<Card> hand = new ArrayList<>();
+        List<Card> firstLikeCards;
+        List<Card> secondLikeCards;
+
+        for(Card c : sorted) {
+            hand.add(new Card(c.getRank(), c.getSuit()));
+        }
+        firstLikeCards = searchHandForLikeCards(hand);
+
+        secondLikeCards = searchHandForLikeCards(hand);
+
+
+        if (!firstLikeCards.isEmpty() && !secondLikeCards.isEmpty()) {
+            String firstRank = firstLikeCards.get(0).toString().split(" ")[0] + "s";
+            String secondRank = secondLikeCards.get(0).toString().split(" ")[0] + "s";
+
+            if (firstLikeCards.size() == 3 || secondLikeCards.size() == 3) {
+                System.out.println("You have a full house! - " + firstRank + " and " + secondRank);
+            } else {
+                System.out.println("You have 2 pair! - " + firstRank + " and " + secondRank);
+            }
+
+        } else if (!firstLikeCards.isEmpty()) {
+            String rank = firstLikeCards.get(0).toString().split(" ")[0] + "s";
+            if (firstLikeCards.size() == 4) {
+                System.out.println("You have 4-of-a-kind! - " + rank);
+            } else if (firstLikeCards.size() == 3) {
+                System.out.println("You have 3-of-a-kind - " + rank);
+            } else {
+                System.out.println("You have a pair of " + rank);
+            }
+        } else {
+            String rank = sorted.get(sorted.size()-1).toString().split(" ")[0];
+            System.out.println("You have high card: " + rank);
+        }
+    }
+
+    private List<Card> searchHandForLikeCards(List<Card> hand) {
+
+        List<Card> likeCards = new ArrayList<>();
+
+        for (int i = 0; i < hand.size() - 1; i++) {
+            if (hand.get(i).getRank() == hand.get(i + 1).getRank()) {
+                likeCards.add(hand.get(i));
+                likeCards.add(hand.get(i + 1));
+                break;
+            }
+        }
+        for(Card c: likeCards) {
+            hand.remove(c);
+        }
+
+        if (hand.size() > 0 && !likeCards.isEmpty()) {
+            int rank = likeCards.get(0).getRank();
+            for(int i = 0; i < hand.size(); i++) {
+                if (hand.get(i).getRank() == rank) {
+                    likeCards.add(hand.get(i));
+                }
+            }
+        }
+        for(Card c: likeCards) {
+            hand.remove(c);
+        }
+
+        return likeCards;
     }
 
     private boolean flush() {

@@ -29,7 +29,7 @@ public class PokerHandler {
             output += c.toString() + ", ";
         }
 
-        System.out.println(output.substring(0, output.length()-1));
+        System.out.println(output.substring(0, output.length()-2));
 
 
     }
